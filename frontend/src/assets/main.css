@@ -1,0 +1,467 @@
+/* =========================================================================
+   AgentFlow 全局样式
+   1) 设计令牌  2) Element Plus 主题覆盖  3) 基础重置  4) Markdown 渲染排版  5) 通用版式
+   ========================================================================= */
+
+/* ---------------------------------------------------------------- 1 令牌 */
+:root {
+  /* 品牌主色：靛蓝。Element Plus 的派生色按官方 mix 公式算好写死，
+     这样不引 sass 也能整套换主题 */
+  --af-primary: #4f46e5;
+  --af-primary-light-3: #837eed;
+  --af-primary-light-5: #a7a3f2;
+  --af-primary-light-7: #cac8f7;
+  --af-primary-light-8: #dcdaf9;
+  --af-primary-light-9: #ededfc;
+  --af-primary-dark-2: #3f38b7;
+
+  /* 中性色阶（带一点蓝，避免死灰） */
+  --af-ink-1: #14121f;
+  --af-ink-2: #3b3852;
+  --af-ink-3: #6b6885;
+  --af-ink-4: #9b98b0;
+  --af-line: #e6e4f0;
+  --af-line-soft: #f0eef8;
+
+  /* 背景：绝不用纯白 / 纯灰，统一带一点冷紫的层次 */
+  --af-bg: #f6f5fb;
+  --af-surface: #ffffff;
+  --af-surface-2: #fbfaff;
+
+  /* 侧栏：深色玻璃感 */
+  --af-nav-1: #191735;
+  --af-nav-2: #241f4d;
+
+  /* 语义色（与 Element Plus 一致，方便混用） */
+  --af-success: #10a37f;
+  --af-warning: #e8a33d;
+  --af-danger: #e5484d;
+
+  --af-radius: 10px;
+  --af-radius-lg: 14px;
+  --af-shadow-sm: 0 1px 2px rgba(20, 18, 31, 0.05);
+  --af-shadow: 0 4px 16px -4px rgba(20, 18, 31, 0.1), 0 1px 3px rgba(20, 18, 31, 0.04);
+  --af-shadow-lg: 0 18px 40px -12px rgba(20, 18, 31, 0.22);
+
+  --af-nav-width: 224px;
+  --af-header-height: 56px;
+
+  /* 中文界面用系统中文栈：PingFang / 思源黑体 这类才是 CJK 的正确解，
+     加载几 MB 的网络中文字体既慢又没必要 */
+  --af-font: "PingFang SC", "Hiragino Sans GB", "Source Han Sans SC", "Noto Sans CJK SC",
+    "Microsoft YaHei", system-ui, sans-serif;
+  --af-font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+/* ------------------------------------------------- 2 Element Plus 主题 */
+:root {
+  --el-color-primary: var(--af-primary);
+  --el-color-primary-light-3: var(--af-primary-light-3);
+  --el-color-primary-light-5: var(--af-primary-light-5);
+  --el-color-primary-light-7: var(--af-primary-light-7);
+  --el-color-primary-light-8: var(--af-primary-light-8);
+  --el-color-primary-light-9: var(--af-primary-light-9);
+  --el-color-primary-dark-2: var(--af-primary-dark-2);
+
+  --el-color-success: var(--af-success);
+  --el-color-warning: var(--af-warning);
+  --el-color-danger: var(--af-danger);
+  --el-color-error: var(--af-danger);
+
+  --el-text-color-primary: var(--af-ink-1);
+  --el-text-color-regular: var(--af-ink-2);
+  --el-text-color-secondary: var(--af-ink-3);
+  --el-text-color-placeholder: var(--af-ink-4);
+
+  --el-border-color: var(--af-line);
+  --el-border-color-light: var(--af-line-soft);
+  --el-border-color-lighter: var(--af-line-soft);
+  --el-fill-color-blank: var(--af-surface);
+
+  --el-border-radius-base: 8px;
+  --el-border-radius-small: 6px;
+
+  --el-font-family: var(--af-font);
+  --el-font-size-base: 14px;
+
+  /* 紧凑一点：用户偏好小内边距 */
+  --el-component-size: 34px;
+  --el-component-size-small: 28px;
+  --el-component-size-large: 40px;
+}
+
+/* ---------------------------------------------------------- 3 基础重置 */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--af-font);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--af-ink-1);
+  background: var(--af-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--af-primary);
+  text-decoration: none;
+}
+
+/* 键盘可达：所有可聚焦元素都留可见焦点环 */
+:focus-visible {
+  outline: 2px solid var(--af-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 细滚动条 */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cfccdd;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b3afc6;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ------------------------------------------------- 4 Markdown 渲染排版 */
+/* 配套 components/MarkdownBlock.vue（渲染逻辑在 utils/markdown.js）。
+   放在全局是因为三个地方都要用（大模型答案 / 召回片段 / 文档片段预览），
+   而 scoped 样式管不到 v-html 生成的节点，各页复制一份更容易走偏。
+   两档：默认（正文）与 .md-body--compact（抽屉小预览）。 */
+
+.md-body {
+  font-size: 13.5px;
+  line-height: 1.78;
+  color: var(--af-ink-2);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+/* 纯文本档：保留作者换行 */
+.md-body--plain {
+  white-space: pre-wrap;
+}
+
+/* 首尾不留外边距，避免在卡片里露出多余空白 */
+.md-body > *:first-child {
+  margin-top: 0 !important;
+}
+.md-body > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 标题 */
+.md-body .md-h {
+  margin: 16px 0 8px;
+  font-weight: 640;
+  line-height: 1.4;
+  color: var(--af-ink-1);
+  letter-spacing: -0.01em;
+}
+.md-body h1.md-h {
+  font-size: 17px;
+}
+.md-body h2.md-h {
+  font-size: 16px;
+}
+.md-body h3.md-h {
+  font-size: 14.5px;
+}
+.md-body h4.md-h,
+.md-body h5.md-h,
+.md-body h6.md-h {
+  font-size: 13.5px;
+  color: var(--af-ink-2);
+}
+
+/* 段落 */
+.md-body .md-p {
+  margin: 0 0 9px;
+}
+
+/* 列表 */
+.md-body .md-list {
+  margin: 6px 0 9px;
+  padding-left: 21px;
+}
+.md-body .md-list .md-list {
+  margin: 3px 0;
+}
+.md-body .md-list li {
+  margin: 2px 0;
+}
+.md-body .md-list li::marker {
+  color: #8b83ee;
+}
+.md-body ol.md-list li::marker {
+  font-family: var(--af-font-mono);
+  font-size: 12px;
+}
+
+/* 行内代码 */
+.md-body .md-code {
+  padding: 1px 5px;
+  margin: 0 1px;
+  border-radius: 5px;
+  background: #f1effb;
+  border: 1px solid #e5e2f6;
+  color: #5a50d8;
+  font-family: var(--af-font-mono);
+  font-size: 0.88em;
+  word-break: break-all;
+}
+
+/* 围栏代码块 */
+.md-body .md-pre {
+  margin: 9px 0;
+  padding: 10px 12px;
+  border-radius: var(--af-radius);
+  background: #f8f7fd;
+  border: 1px solid var(--af-line);
+  overflow-x: auto;
+}
+.md-body .md-pre code {
+  font-family: var(--af-font-mono);
+  font-size: 12px;
+  line-height: 1.65;
+  color: #3b3852;
+  white-space: pre;
+}
+
+/* 引用 */
+.md-body .md-quote {
+  margin: 9px 0;
+  padding: 7px 12px;
+  border-left: 3px solid var(--af-primary-light-7);
+  border-radius: 0 8px 8px 0;
+  background: #f8f7fd;
+  color: var(--af-ink-3);
+}
+
+/* 分隔线 */
+.md-body .md-hr {
+  margin: 13px 0;
+  border: none;
+  border-top: 1px solid var(--af-line);
+}
+
+/* 表格：窄屏横向滚动，不撑破卡片 */
+.md-body .md-table-wrap {
+  margin: 9px 0;
+  overflow-x: auto;
+  border-radius: var(--af-radius);
+  border: 1px solid var(--af-line);
+}
+.md-body .md-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.md-body .md-table th,
+.md-body .md-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--af-line-soft);
+  border-right: 1px solid var(--af-line-soft);
+  text-align: left;
+  vertical-align: top;
+}
+.md-body .md-table th {
+  background: #f8f7fd;
+  font-weight: 620;
+  color: var(--af-ink-2);
+  white-space: nowrap;
+}
+.md-body .md-table tr:last-child td {
+  border-bottom: none;
+}
+.md-body .md-table th:last-child,
+.md-body .md-table td:last-child {
+  border-right: none;
+}
+
+/* 链接与图片 */
+.md-body .md-link {
+  color: var(--af-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.md-body .md-img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+.md-body del {
+  color: var(--af-ink-4);
+}
+.md-body strong {
+  font-weight: 640;
+  color: var(--af-ink-1);
+}
+
+/* 紧凑档：抽屉里的片段小预览 */
+.md-body--compact {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.md-body--compact .md-h {
+  margin: 8px 0 4px;
+  font-size: 12.5px;
+}
+.md-body--compact .md-p {
+  margin: 0 0 4px;
+}
+.md-body--compact .md-list {
+  margin: 3px 0 4px;
+  padding-left: 17px;
+}
+.md-body--compact .md-pre {
+  margin: 4px 0;
+  padding: 6px 8px;
+}
+.md-body--compact .md-pre code {
+  font-size: 11px;
+}
+.md-body--compact .md-table {
+  font-size: 11.5px;
+}
+.md-body--compact .md-table th,
+.md-body--compact .md-table td {
+  padding: 3px 7px;
+}
+
+/* ---------------------------------------------------------- 5 通用版式 */
+
+/* 页面外壳：每个视图最外层都用它，统一内边距与最大宽度 */
+.af-page {
+  padding: 20px 24px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 页头：标题 + 描述 + 右侧操作区 */
+.af-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.af-page-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--af-ink-1);
+}
+.af-page-desc {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--af-ink-3);
+}
+
+/* 白卡：带一点微渐变，避免死板的纯白块 */
+.af-card {
+  background: linear-gradient(180deg, #ffffff 0%, var(--af-surface-2) 100%);
+  border: 1px solid var(--af-line);
+  border-radius: var(--af-radius-lg);
+  box-shadow: var(--af-shadow-sm);
+}
+.af-card--pad {
+  padding: 18px;
+}
+
+/* 行内的小标签 */
+.af-mono {
+  font-family: var(--af-font-mono);
+  font-size: 12px;
+}
+.af-muted {
+  color: var(--af-ink-3);
+}
+.af-dim {
+  color: var(--af-ink-4);
+}
+
+/* 空状态容器 */
+.af-empty {
+  padding: 44px 20px;
+  text-align: center;
+  color: var(--af-ink-3);
+}
+
+/* 让 Element Plus 的卡片和表格贴紧我们的圆角体系 */
+.el-card {
+  border-radius: var(--af-radius-lg) !important;
+  border-color: var(--af-line) !important;
+}
+.el-table {
+  --el-table-header-bg-color: #f8f7fd;
+  --el-table-border-color: var(--af-line-soft);
+  font-size: 13px;
+}
+.el-table th.el-table__cell {
+  font-weight: 600;
+  color: var(--af-ink-2);
+}
+.el-dialog {
+  border-radius: var(--af-radius-lg);
+}
+.el-drawer__header {
+  margin-bottom: 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--af-line);
+  color: var(--af-ink-1);
+  font-weight: 600;
+}
+.el-drawer__body {
+  padding: 20px;
+}
+.el-form-item__label {
+  font-weight: 500;
+  color: var(--af-ink-2);
+}
+
+/* 触摸目标：小屏下把 Element 的小尺寸控件撑回可点区域 */
+@media (max-width: 768px) {
+  .af-page {
+    padding: 14px 14px 32px;
+  }
+  .af-page-title {
+    font-size: 18px;
+  }
+  .el-button:not(.el-button--small):not(.is-link):not(.is-text) {
+    min-height: 40px;
+  }
+}
+
+/* 无障碍：尊重系统的「减少动态效果」 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

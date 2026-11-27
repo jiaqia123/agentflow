@@ -1,0 +1,12 @@
+retrieval:
+  top_k: 5
+  fusion_mode: reciprocal_rerank
+  num_queries: 0          # >1 启用 Multi-Query 查询扩展
+
+before_refine:
+  enable_hyde: false      # 检索前：是否启用 HyDE
+
+after_refine:
+  enable_rerank: true     # 检索后：是否启用重排
+  rerank_top_n: 3
+  enable_compression: false  # 检索后：是否启用上下文压缩

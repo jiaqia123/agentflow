@@ -1,0 +1,43 @@
+# ===== 环境变量（真实密钥绝不入库）=====
+.env
+.env.*
+!.env.example
+
+# ===== 运行时数据 =====
+# Chroma 向量库、上传文件、解析后的文档，都是本地产生的数据
+backend/data/
+*.sqlite3
+*-journal
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# ===== Node =====
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ===== 历史备份（本地快照，不入库）=====
+.backup/
+
+# ===== macOS =====
+.DS_Store
+._*
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.swp
+
+# ===== 日志 =====
+*.log
+logs/
