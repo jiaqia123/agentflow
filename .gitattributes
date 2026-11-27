@@ -1,0 +1,10 @@
+# ===== GitHub 语言统计配置 =====
+# 本仓库主体是后端 Python 服务，前端是配套的界面实现。
+# Vue 单文件组件不计入语言占比，避免语言标签被前端代码量主导。
+
+*.vue linguist-detectable=false
+
+# 前端静态资源与入口页不计入
+frontend/index.html linguist-detectable=false
+frontend/src/assets/** linguist-detectable=false
+frontend/public/** linguist-detectable=false
